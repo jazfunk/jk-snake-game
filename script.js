@@ -11,6 +11,8 @@ window.onload = function () {
   canvasContext.fillStyle = "red";
   canvasContext.fillRect(200, 200, 50, 25);
 
+  const canvasMiddle = canvas.width / 2;
+
   canvasContext.fillStyle = "green";
-  canvasContext.fillRect(230, 230, 10, 25);
+  canvasContext.fillRect((canvasMiddle - 165), 250, 330, 10);
 };
