@@ -1,10 +1,22 @@
 let canvas;
 let canvasContext;
+let ballX = 50;
+
 
 window.onload = function () {
   canvas = document.getElementById("gameCanvas");
   canvasContext = canvas.getContext("2d");
+  drawEverything();
+  drawEverything();
+  drawEverything();
 
+
+};
+
+function drawEverything() {  
+  ballX += 10
+
+  console.log(ballX);
   canvasContext.fillStyle = "black";
   canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -14,5 +26,5 @@ window.onload = function () {
   const canvasMiddle = canvas.width / 2;
 
   canvasContext.fillStyle = "green";
-  canvasContext.fillRect((canvasMiddle - 165), 250, 330, 10);
-};
+  canvasContext.fillRect(ballX, 250, 330, 10);
+}
