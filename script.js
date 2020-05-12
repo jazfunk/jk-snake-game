@@ -1,10 +1,40 @@
 let canvas;
 let canvasDisplay;
 
-let snakeX = 50;
-let snakeY = 50;
-let snakeSpeedX = 15;
-let snakeSpeedY = 15;
+let snakeX = 5;
+let snakeY = 25;
+let snakeSpeedX = 5;
+let snakeSpeedY = 5;
+
+let rightPressed = false;
+let leftPressed = false;
+let upPressed = false;
+let downPressed = false;
+
+document.addEventListener("keydown", keyDownHandler, false);
+
+function keyDownHandler(e) {
+  let framesPerSecond = 30;
+
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = true;
+    // moveSnakeHorizontal();
+  }
+  if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = true;
+    // moveSnakeHorizontal();
+  }
+
+  if (e.key === "Up" || e.key === "ArrowUp") {
+    upPressed = true;
+    // moveSnakeVertical();
+  }
+
+  if (e.key === "Down" || e.key === "ArrowDown") {
+    downPressed = true;
+    // moveSnakeVertical();
+  }
+}
 
 window.onload = () => {
   canvas = document.getElementById("gameCanvas");
@@ -12,9 +42,9 @@ window.onload = () => {
 
   let framesPerSecond = 30;
   setInterval(() => {
-    // set the game off here
     drawGameObjects();
-    moveSnake();
+    moveSnakeHorizontal();
+    moveSnakeVertical();
   }, 1000 / framesPerSecond);
 };
 
@@ -47,22 +77,26 @@ function drawGameObjects() {
   createRectangle(snakeX, snakeY, 10, 10, "#05386B");
 }
 
-function moveSnake() {
-  snakeX += snakeSpeedX;
+function moveSnakeHorizontal() {
+    snakeX += snakeSpeedX;
 
-  if (snakeX < 0) {
-    snakeSpeedX = -snakeSpeedX;
-  }
+    if (snakeX < 5) {
+      snakeSpeedX = -snakeSpeedX;
+    }
 
-  if (snakeX > canvas.width) {
-    snakeSpeedX = -snakeSpeedX;
-  }
+    if (snakeX > canvas.width - 15) {
+      snakeSpeedX = -snakeSpeedX;
+    }
+}
 
-  if (snakeY < 0) {
+function moveSnakeVertical() {
+  snakeY += snakeSpeedY;
+
+  if (snakeY < 25) {
     snakeSpeedY = -snakeSpeedY;
   }
 
-  if (ballY > canvas.height) {
+  if (snakeY > canvas.height - 15) {
     snakeSpeedY = -snakeSpeedY;
   }
 }
