@@ -1,0 +1,7 @@
+Snake Game Info
+
+Dark:  #05386B
+Medium:  #379683
+Light:  #5CDB95
+lighter:  #8EE4AF
+Lightest:  #EDF5E1
