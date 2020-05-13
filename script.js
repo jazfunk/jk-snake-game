@@ -79,8 +79,8 @@ function createRectangle(leftX, topY, width, height, drawColor) {
 }
 
 function drawGrid() {
-  // let gridColor = "#8EE4AF";
-  let gridColor = "#379683";
+  let gridColor = "#8EE4AF";
+  // let gridColor = "#379683";
   for (let row = 0; row < canvas.height; row += 20) {
     for (let col = 0; col < canvas.width; col += 20) {
       createRectangle(col + 20, row, 1, 20, gridColor);
