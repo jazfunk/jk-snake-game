@@ -1,5 +1,5 @@
 let canvas;
-let canvasDisplay;
+let canvasContext;
 let ballX = 50;
 let ballY = 50;
 let ballSpeedX = 15;
@@ -37,7 +37,7 @@ function handleMouseClick(e) {
 
 window.onload = function () {
   canvas = document.getElementById("gameCanvas");
-  canvasDisplay = canvas.getContext("2d");
+  canvasContext = canvas.getContext("2d");
 
   let framesPerSecond = 30;
   setInterval(() => {
@@ -116,14 +116,14 @@ function drawNet() {
 
 function drawGameObjects() {
   colorRect(0, 0, canvas.width, canvas.height, "black");
-  canvasDisplay.fillStyle = "white";
+  canvasContext.fillStyle = "white";
   if (showingWinScreen) {
     if (player1Score >= WINNING_SCORE) {
-      canvasDisplay.fillText("Left Player Won!", 350, 200);
+      canvasContext.fillText("Left Player Won!", 350, 200);
       showingWinScreen = true;
     } else if (player2Score >= WINNING_SCORE)
-    canvasDisplay.fillText("Right Player Won!", 350, 200);
-    canvasDisplay.fillText("Click to continue", 350, 500);
+    canvasContext.fillText("Right Player Won!", 350, 200);
+    canvasContext.fillText("Click to continue", 350, 500);
     return;
   }
 
@@ -141,18 +141,18 @@ function drawGameObjects() {
 
   colorCircle(ballX, ballY, 10, "white");
 
-  canvasDisplay.fillText(player1Score, 100, 100);
-  canvasDisplay.fillText(player2Score, canvas.width - 100, 100);
+  canvasContext.fillText(player1Score, 100, 100);
+  canvasContext.fillText(player2Score, canvas.width - 100, 100);
 }
 
 function colorCircle(centerX, centerY, radius, drawColor) {
-  canvasDisplay.fillStyle = drawColor;
-  canvasDisplay.beginPath();
-  canvasDisplay.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
-  canvasDisplay.fill();
+  canvasContext.fillStyle = drawColor;
+  canvasContext.beginPath();
+  canvasContext.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
+  canvasContext.fill();
 }
 
 function colorRect(leftX, topY, width, height, drawColor) {
-  canvasDisplay.fillStyle = drawColor;
-  canvasDisplay.fillRect(leftX, topY, width, height);
+  canvasContext.fillStyle = drawColor;
+  canvasContext.fillRect(leftX, topY, width, height);
 }

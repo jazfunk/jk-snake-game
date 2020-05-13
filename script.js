@@ -1,10 +1,13 @@
 let canvas;
 let canvasDisplay;
 
-let snakeX = 5;
-let snakeY = 25;
-let snakeSpeedX = 5;
-let snakeSpeedY = 5;
+let snakeHeadSize = 20;
+let snakeX = 40;
+let snakeY = 40;
+let snakeSpeedX = 10;
+let snakeSpeedY = 10;
+
+let myTimer;
 
 let rightPressed = false;
 let leftPressed = false;
@@ -17,11 +20,27 @@ function keyDownHandler(e) {
   let framesPerSecond = 30;
 
   if (e.key === "Right" || e.key === "ArrowRight") {
+    
+    clearInterval(myTimer);
+    
     rightPressed = true;
+    
+    myTimer = setInterval(() => {
+      // drawGameObjects();
+      moveSnakeHorizontal();      
+    }, 1000 / framesPerSecond);
     // moveSnakeHorizontal();
   }
   if (e.key === "Left" || e.key === "ArrowLeft") {
+    
+    clearInterval(myTimer);
+
     leftPressed = true;
+
+    myTimer = setInterval(() => {
+      drawGameObjects();
+      moveSnakeHorizontal();      
+    }, 1000 / framesPerSecond);
     // moveSnakeHorizontal();
   }
 
@@ -38,19 +57,20 @@ function keyDownHandler(e) {
 
 window.onload = () => {
   canvas = document.getElementById("gameCanvas");
-  canvasDisplay = canvas.getContext("2d");
+  canvasContext = canvas.getContext("2d");
 
-  let framesPerSecond = 30;
-  setInterval(() => {
-    drawGameObjects();
-    moveSnakeHorizontal();
-    moveSnakeVertical();
-  }, 1000 / framesPerSecond);
+  // let framesPerSecond = 30;
+  // myTimer = setInterval(() => {
+  //   drawGameObjects();
+  //   moveSnakeHorizontal();
+  //   moveSnakeVertical();
+  // }, 1000 / framesPerSecond);
 };
 
+
 function createRectangle(leftX, topY, width, height, drawColor) {
-  canvasDisplay.fillStyle = drawColor;
-  canvasDisplay.fillRect(leftX, topY, width, height);
+  canvasContext.fillStyle = drawColor;
+  canvasContext.fillRect(leftX, topY, width, height);
 }
 
 function drawGrid() {
@@ -74,29 +94,45 @@ function drawGameObjects() {
   createRectangle(0, 0, canvas.width, 20, "#05386B");
 
   // Snake Head
-  createRectangle(snakeX, snakeY, 10, 10, "#05386B");
+  createRectangle(snakeX, snakeY, snakeHeadSize, snakeHeadSize, "#05386B");
 }
 
 function moveSnakeHorizontal() {
-    snakeX += snakeSpeedX;
+  snakeX += snakeSpeedX;
 
-    if (snakeX < 5) {
-      snakeSpeedX = -snakeSpeedX;
-    }
+  if (snakeX < 2 || snakeX > canvas.width - 22) {
+    // clearInterval(myTimer);
+    snakeSpeedX = -snakeSpeedX;
+  }
 
-    if (snakeX > canvas.width - 15) {
-      snakeSpeedX = -snakeSpeedX;
-    }
+  // if (snakeX > canvas.width - 22) {
+  //   // clearInterval(myTimer);
+  //   snakeSpeedX = -snakeSpeedX;
+  // }
+
+  if (leftPressed) {
+    // snakeX -= snakeSpeedX;
+  }
+  if (rightPressed) {
+    // snakeX += snakeSpeedX;
+  }
 }
 
 function moveSnakeVertical() {
-  snakeY += snakeSpeedY;
-
-  if (snakeY < 25) {
+  if (snakeY < 22) {
+    // clearInterval(myTimer);
     snakeSpeedY = -snakeSpeedY;
   }
 
-  if (snakeY > canvas.height - 15) {
+  if (snakeY > canvas.height - 22) {
+    // clearInterval(myTimer);
     snakeSpeedY = -snakeSpeedY;
   }
+
+  // if (downPressed) {
+  //   snakeY += snakeSpeedY;
+  // }
+  // if (upPressed) {
+  //   snakeY -= snakeSpeedY;
+  // }
 }
