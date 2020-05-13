@@ -103,9 +103,9 @@ function drawGameObjects() {
 }
 
 function moveSnakeHorizontal() {
-  if (snakeX < 0 || snakeX > canvas.width - 40) {
+  if (snakeX < 0 || snakeX > canvas.width) {
     clearInterval(myTimer);
-    clearSnakeDirectionValues();
+    // clearSnakeDirectionValues();
   }
   if (leftPressed) {
     if (snakeX >= snakeHeadSize) {
@@ -113,7 +113,7 @@ function moveSnakeHorizontal() {
     }
   }
   if (rightPressed) {
-    if (snakeX <= canvas.width - snakeHeadSize) {
+    if (snakeX <= canvas.width) {
       snakeX += snakeSpeedX;
     }
   }
@@ -123,16 +123,16 @@ function moveSnakeHorizontal() {
 function moveSnakeVertical() {  
   if (snakeY < 0 || snakeY > canvas.height - snakeHeadSize) {
     clearInterval(myTimer);
-    clearSnakeDirectionValues();
+    // clearSnakeDirectionValues();
   }
   if (downPressed) {
-    if (snakeY < canvas.height - snakeHeadSize) {
-      snakeY += snakeSpeedY;
-    }
+    snakeY += snakeSpeedY;
+    // if (snakeY < canvas.height - snakeHeadSize) {
+    // }
   }
   if (upPressed) {
-    if (snakeY >= snakeHeadSize) {
-      snakeY -= snakeSpeedY;
-    }
+    snakeY -= snakeSpeedY;
+    // if (snakeY >= snakeHeadSize) {
+    // }
   }
 }
