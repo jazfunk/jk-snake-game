@@ -42,7 +42,7 @@ window.onload = function () {
   let framesPerSecond = 30;
   setInterval(() => {
     moveEverything();
-    drawGameObjects();
+    createGameObjects();
   }, 1000 / framesPerSecond);
 
   canvas.addEventListener("mousedown", handleMouseClick);
@@ -114,7 +114,7 @@ function drawNet() {
   }
 }
 
-function drawGameObjects() {
+function createGameObjects() {
   colorRect(0, 0, canvas.width, canvas.height, "black");
   canvasContext.fillStyle = "white";
   if (showingWinScreen) {

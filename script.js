@@ -1,7 +1,7 @@
 let canvas;
 let canvasDisplay;
 
-let snakeHeadSize = 20;
+let unitSize = 20;
 let snakeX = 20;
 let snakeY = 40;
 let snakeSpeedX = 20;
@@ -16,12 +16,10 @@ let downPressed = false;
 
 document.addEventListener("keydown", keyDownHandler, false);
 
-function clearSnakeDirectionValues() {
-  rightPressed = false;
-  leftPressed = false;
-  upPressed = false;
-  downPressed = false;
-}
+window.onload = () => {
+  canvas = document.getElementById("gameCanvas");
+  canvasContext = canvas.getContext("2d");
+};
 
 function keyDownHandler(e) {
   e.preventDefault();
@@ -35,7 +33,7 @@ function keyDownHandler(e) {
     rightPressed = true;
 
     myTimer = setInterval(() => {
-      drawGameObjects();
+      createGameObjects();
       moveSnakeHorizontal();
     }, 1000 / framesPerSecond);
   }
@@ -44,7 +42,7 @@ function keyDownHandler(e) {
     leftPressed = true;
 
     myTimer = setInterval(() => {
-      drawGameObjects();
+      createGameObjects();
       moveSnakeHorizontal();
     }, 1000 / framesPerSecond);
   }
@@ -53,7 +51,7 @@ function keyDownHandler(e) {
     upPressed = true;
 
     myTimer = setInterval(() => {
-      drawGameObjects();
+      createGameObjects();
       moveSnakeVertical();
     }, 1000 / framesPerSecond);
   }
@@ -62,53 +60,22 @@ function keyDownHandler(e) {
     downPressed = true;
 
     myTimer = setInterval(() => {
-      drawGameObjects();
+      createGameObjects();
       moveSnakeVertical();
     }, 1000 / framesPerSecond);
   }
 }
 
-window.onload = () => {
-  canvas = document.getElementById("gameCanvas");
-  canvasContext = canvas.getContext("2d");
-};
-
-function createRectangle(leftX, topY, width, height, drawColor) {
-  canvasContext.fillStyle = drawColor;
-  canvasContext.fillRect(leftX, topY, width, height);
-}
-
-function drawGrid() {
-  let gridColor = "#8EE4AF";
-  // let gridColor = "#379683";
-  for (let row = 0; row < canvas.height; row += 20) {
-    for (let col = 0; col < canvas.width; col += 20) {
-      createRectangle(col + 20, row, 1, 20, gridColor);
-      createRectangle(col, row + 20, 20, 1, gridColor);
-    }
-  }
-}
-
-function drawGameObjects() {
-  // Game background
-  createRectangle(0, 0, canvas.width, canvas.height, "#5CDB95");
-
-  drawGrid();
-
-  // Header
-  // createRectangle(0, 0, canvas.width, 20, "#05386B");
-
-  // Snake Head
-  createRectangle(snakeX, snakeY, snakeHeadSize, snakeHeadSize, "#05386B");
-}
-
 function moveSnakeHorizontal() {
   if (snakeX < 0 || snakeX > canvas.width) {
-    clearInterval(myTimer);
+    snakeSpeedX = -snakeSpeedX;
+    // clearInterval(myTimer);
     // clearSnakeDirectionValues();
+    createApple();
+
   }
   if (leftPressed) {
-    if (snakeX >= snakeHeadSize) {
+    if (snakeX >= unitSize) {
       snakeX -= snakeSpeedX;
     }
   }
@@ -121,18 +88,66 @@ function moveSnakeHorizontal() {
 }
 
 function moveSnakeVertical() {  
-  if (snakeY < 0 || snakeY > canvas.height - snakeHeadSize) {
-    clearInterval(myTimer);
+  if (snakeY < 0 || snakeY > canvas.height - unitSize) {
+    snakeSpeedY = -snakeSpeedY;
+    // clearInterval(myTimer);
     // clearSnakeDirectionValues();
+    createApple();
   }
   if (downPressed) {
     snakeY += snakeSpeedY;
-    // if (snakeY < canvas.height - snakeHeadSize) {
+    // if (snakeY < canvas.height - unitSize) {
     // }
   }
   if (upPressed) {
     snakeY -= snakeSpeedY;
-    // if (snakeY >= snakeHeadSize) {
+    // if (snakeY >= unitSize) {
     // }
   }
+}
+function clearSnakeDirectionValues() {
+  rightPressed = false;
+  leftPressed = false;
+  upPressed = false;
+  downPressed = false;
+}
+
+function createGrid() {
+  let gridColor = "#8EE4AF";
+  // let gridColor = "#379683";
+  for (let row = 0; row < canvas.height; row += 20) {
+    for (let col = 0; col < canvas.width; col += 20) {
+      createRectangle(col + 20, row, 1, 20, gridColor);
+      createRectangle(col, row + 20, 20, 1, gridColor);
+    }
+  }
+}
+
+function createGameObjects() {
+  // Game background
+  createRectangle(0, 0, canvas.width, canvas.height, "#5CDB95");
+
+  createGrid();
+  
+  // Snake Head
+  createRectangle(snakeX, snakeY, unitSize, unitSize, "#05386B");
+}
+
+function createRectangle(leftX, topY, width, height, createColor) {
+  canvasContext.fillStyle = createColor;
+  canvasContext.fillRect(leftX, topY, width, height);
+}
+
+function createApple() {
+
+  let randomX = Math.floor(Math.random()*40)*20;
+  let randomY = Math.floor(Math.random()*30)*20;
+
+  console.log(Math.floor(Math.random()*40)*20);
+  console.log(Math.floor(Math.random()*30)*20);
+  console.log(randomX, randomY);
+
+  createRectangle(randomX, randomY, unitSize, unitSize, "#379683");
+  
+
 }
