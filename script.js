@@ -24,9 +24,8 @@ document.addEventListener("keydown", keyDownHandler, false);
 window.onload = () => {
   canvas = document.getElementById("gameCanvas");
   canvasContext = canvas.getContext("2d");
-  // let randomApple = randomAppleLocation();
-  // appleX = randomApple[0];
-  // appleX = randomApple[1];
+  randomAppleLocation();
+
 };
 
 function keyDownHandler(e) {
@@ -140,7 +139,7 @@ function createGameObjects() {
   // Snake Head
   createRectangle(snakeX, snakeY, unitSize, unitSize, "#05386B");
 
-  // createApple();
+  createApple();
 
 }
 
@@ -157,10 +156,6 @@ function createApple() {
 }
 
 function randomAppleLocation() {
-  let randomX = Math.floor(Math.random()*40)*20;
-  let randomY = Math.floor(Math.random()*30)*20;
-
-  // return location = [randomX, randomY];  
-  // console.log(randomX, randomY);
-
+  appleX = Math.floor(Math.random()*40)*20;
+  appleY = Math.floor(Math.random()*30)*20;
 }
