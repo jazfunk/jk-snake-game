@@ -34,7 +34,7 @@ function keyDownHandler(e) {
   clearSnakeDirectionValues();
   clearInterval(myTimer);
 
-  let framesPerSecond = 10;
+  let framesPerSecond = 5;
 
   if (e.key === "Right" || e.key === "ArrowRight") {
     rightPressed = true;
@@ -141,7 +141,11 @@ function createGameObjects() {
 
   createApple();
 
+  checkForApple();
+
 }
+
+
 
 function createRectangle(leftX, topY, width, height, createColor) {
   canvasContext.fillStyle = createColor;
@@ -149,13 +153,18 @@ function createRectangle(leftX, topY, width, height, createColor) {
 }
 
 function createApple() {  
-
   createRectangle(appleX, appleY, unitSize, unitSize, "#379683");
-  
-
 }
 
 function randomAppleLocation() {
   appleX = Math.floor(Math.random()*40)*20;
   appleY = Math.floor(Math.random()*30)*20;
+}
+
+function checkForApple() {
+  if (snakeX === appleX && snakeY === appleY) {
+    clearInterval(myTimer);
+    console.log("Apple Eaten");
+  }
+
 }
