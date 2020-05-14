@@ -7,6 +7,9 @@ let snakeY = 40;
 let snakeSpeedX = 20;
 let snakeSpeedY = 20;
 
+let appleX = 0;
+let appleY = 0;
+
 let myTimer;
 
 let rightPressed = false;
@@ -14,11 +17,16 @@ let leftPressed = false;
 let upPressed = false;
 let downPressed = false;
 
+let appleEaten = false;
+
 document.addEventListener("keydown", keyDownHandler, false);
 
 window.onload = () => {
   canvas = document.getElementById("gameCanvas");
   canvasContext = canvas.getContext("2d");
+  // let randomApple = randomAppleLocation();
+  // appleX = randomApple[0];
+  // appleX = randomApple[1];
 };
 
 function keyDownHandler(e) {
@@ -71,7 +79,7 @@ function moveSnakeHorizontal() {
     snakeSpeedX = -snakeSpeedX;
     // clearInterval(myTimer);
     // clearSnakeDirectionValues();
-    createApple();
+    
 
   }
   if (leftPressed) {
@@ -92,7 +100,7 @@ function moveSnakeVertical() {
     snakeSpeedY = -snakeSpeedY;
     // clearInterval(myTimer);
     // clearSnakeDirectionValues();
-    createApple();
+   
   }
   if (downPressed) {
     snakeY += snakeSpeedY;
@@ -128,9 +136,12 @@ function createGameObjects() {
   createRectangle(0, 0, canvas.width, canvas.height, "#5CDB95");
 
   createGrid();
-  
+
   // Snake Head
   createRectangle(snakeX, snakeY, unitSize, unitSize, "#05386B");
+
+  // createApple();
+
 }
 
 function createRectangle(leftX, topY, width, height, createColor) {
@@ -138,16 +149,18 @@ function createRectangle(leftX, topY, width, height, createColor) {
   canvasContext.fillRect(leftX, topY, width, height);
 }
 
-function createApple() {
+function createApple() {  
 
+  createRectangle(appleX, appleY, unitSize, unitSize, "#379683");
+  
+
+}
+
+function randomAppleLocation() {
   let randomX = Math.floor(Math.random()*40)*20;
   let randomY = Math.floor(Math.random()*30)*20;
 
-  console.log(Math.floor(Math.random()*40)*20);
-  console.log(Math.floor(Math.random()*30)*20);
-  console.log(randomX, randomY);
-
-  createRectangle(randomX, randomY, unitSize, unitSize, "#379683");
-  
+  // return location = [randomX, randomY];  
+  // console.log(randomX, randomY);
 
 }
