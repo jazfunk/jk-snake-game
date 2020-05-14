@@ -34,7 +34,7 @@ function keyDownHandler(e) {
   clearSnakeDirectionValues();
   clearInterval(myTimer);
 
-  let framesPerSecond = 5;
+  let framesPerSecond = 20;
 
   if (e.key === "Right" || e.key === "ArrowRight") {
     rightPressed = true;
