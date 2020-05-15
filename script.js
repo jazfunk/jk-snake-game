@@ -137,17 +137,8 @@ function resetGame() {
   displayGameOver();
 }
 
-function createSnake() {
-  for (let segment = 0; segment < snakeSegments; index++) {
-    // if left or right add/subtract from x
-    // if up or down add/subtract from y
-    createRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");
-  }
-}
-
 function createGrid() {
   let gridColor = "#8EE4AF";
-  // let gridColor = "#379683";
   for (let row = 0; row < canvas.height; row += 20) {
     for (let col = 0; col < canvas.width; col += 20) {
       createRectangle(col + 20, row, 1, 20, gridColor);
@@ -156,37 +147,87 @@ function createGrid() {
   }
 }
 
+// function displaySnake() {
+//   snake.forEach((segment) => {
+//     segment.segmentX = 
+//   });
+// }
+
 function createSnake() {
-  for(let i = 1; i <= snakeSegments; i++) {
-    let offsetX = i * 20;
-    let offsetY = i *20;
+
+  createRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");
+
+//   2nd attempt to increase snake size by one, by creating a class and adding to 
+//   an object array
+//   Each time an apple is eaten, the snakeSegements variable is incremented by one
+//   in another method.
+//   Look each snakeSegment and build a SnakeSegment object, then
+//   add it to the snake[] object "array".
+
+//   for(let i = 0; i <= snakeSegments - 1; i++) {
+//     let offsetX = i * 20;
+//     let offsetY = i *20;
+
+//     // let segment = new SnakeSegment();
+
+//     // segment.segmentX = snakeX;
+//     // segment.segmentY = snakeY;
+//     // segment.width = segmentSize;
+//     // segment.height = segmentSize;
+
+//     // if (i = 1) {
+//     //   segment.head = true;
+//     //   segment.segmentColor = "#5CDB95";
+//     // } else {
+//     //   segment.head = false;
+//     //   segment.segmentColor = "#05386B";
+//     // }
+
+//     // if (upPressed) {
+//     //   segment.direction = 0;
+//     // }
+//     // if (rightPressed) {
+//     //   segment.direction = 1;
+//     // }
+//     // if (downPressed) {
+//     //   segment.direction = 2;
+//     // }
+//     // if (leftPressed) {
+//     //   segment.direction = 3;
+//     // }
+
+//     // snake.push(segment);
+
+
+
+
+
+//  1st attempt to increase snake size after eating apple //
+
+//    This increase the snake by one, but it shifts the 
+//    entire snake as one piece, so wrong approach
     
-    if (leftPressed) {
-      createRectangle(snakeX + offsetX, snakeY, segmentSize, segmentSize, "#05386B");    
-    }
-    if (rightPressed) {
-      createRectangle(snakeX - offsetX, snakeY, segmentSize, segmentSize, "#05386B");    
-    }
-    if (downPressed) {
-      createRectangle(snakeX, snakeY - offsetY, segmentSize, segmentSize, "#05386B");    
-    }
-    if (upPressed) {
-      createRectangle(snakeX, snakeY + offsetY, segmentSize, segmentSize, "#05386B");    
-    }
-    
-    
-    // createRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");    
-  }
+//     if (leftPressed) {
+//       createRectangle(snakeX + offsetX, snakeY, segmentSize, segmentSize, "#05386B");    
+//     }
+//     if (rightPressed) {
+//       createRectangle(snakeX - offsetX, snakeY, segmentSize, segmentSize, "#05386B");    
+//     }
+//     if (downPressed) {
+//       createRectangle(snakeX, snakeY - offsetY, segmentSize, segmentSize, "#05386B");    
+//     }
+//     if (upPressed) {
+//       createRectangle(snakeX, snakeY + offsetY, segmentSize, segmentSize, "#05386B");    
+//     }       
+//   }
+// }
 }
 
-function createGameObjects() {
-  // Game background
+function createGameObjects() {  
   createRectangle(0, 0, canvas.width, canvas.height, "#5CDB95");
 
   createGrid();
 
-  // Snake Head
-  // createRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");
   createSnake();
 
   createApple();
@@ -210,7 +251,6 @@ function randomAppleLocation() {
 
 function checkForApple() {
   if (snakeX === appleX && snakeY === appleY) {
-    // clearInterval(myTimer);
     snakeSegments++;
     console.log("Apple Eaten");
     randomAppleLocation();
@@ -224,7 +264,7 @@ function displayGameOver() {
   let displayTextSize = canvasContext.measureText(displayText);
   canvasContext.fillText(
     displayText,
-    canvas.width / 2 - displayTextSize.width / 2,
-    canvas.height / 2 - 36
+    (canvas.width / 2) - (displayTextSize.width / 2),
+    (canvas.height / 2) - 26
   );
 }
