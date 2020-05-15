@@ -1,4 +1,4 @@
-# JavaScript Calculator App
+# JavaScript Snake Game
 Written in vanilla JavaScript, HTML, and CSS.  The classic Snake Game.
 
 ## Links
