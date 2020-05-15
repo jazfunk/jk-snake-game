@@ -181,9 +181,9 @@ function checkForApple() {
 }
 
 function displayGameOver() {
-  canvasContext.font = "72px Unknown Font, sans-serif";
+  canvasContext.font = "52px Unknown Font, sans-serif";
   canvasContext.fillStyle = "#05386B";
-  let displayText = "Game Over";
+  let displayText = "Game Over - Refresh to try again.";
   let displayTextSize = canvasContext.measureText(displayText);
   canvasContext.fillText(
     displayText,
