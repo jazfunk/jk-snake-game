@@ -265,6 +265,6 @@ function displayGameOver() {
   canvasContext.fillText(
     displayText,
     (canvas.width / 2) - (displayTextSize.width / 2),
-    (canvas.height / 2) - 26
+    (canvas.height / 2)
   );
 }
