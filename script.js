@@ -1,7 +1,7 @@
 let canvas;
 let canvasDisplay;
 
-let unitSize = 20;
+let segmentSize = 20;
 let snakeX = 20;
 let snakeY = 40;
 let snakeSpeedX = 20;
@@ -25,20 +25,23 @@ window.onload = () => {
   canvas = document.getElementById("gameCanvas");
   canvasContext = canvas.getContext("2d");
   randomAppleLocation();
-
+  createGameObjects();
 };
 
 function keyDownHandler(e) {
-  e.preventDefault();
+  if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+    e.preventDefault();
+  }
 
   clearSnakeDirectionValues();
   clearInterval(myTimer);
 
-  let framesPerSecond = 20;
+  let framesPerSecond = 5;
 
   if (e.key === "Right" || e.key === "ArrowRight") {
     rightPressed = true;
-
+    createGameObjects();
+    moveSnakeHorizontal();
     myTimer = setInterval(() => {
       createGameObjects();
       moveSnakeHorizontal();
@@ -47,7 +50,8 @@ function keyDownHandler(e) {
 
   if (e.key === "Left" || e.key === "ArrowLeft") {
     leftPressed = true;
-
+    createGameObjects();
+    moveSnakeHorizontal();
     myTimer = setInterval(() => {
       createGameObjects();
       moveSnakeHorizontal();
@@ -56,7 +60,8 @@ function keyDownHandler(e) {
 
   if (e.key === "Up" || e.key === "ArrowUp") {
     upPressed = true;
-
+    createGameObjects();
+    moveSnakeVertical();
     myTimer = setInterval(() => {
       createGameObjects();
       moveSnakeVertical();
@@ -65,7 +70,8 @@ function keyDownHandler(e) {
 
   if (e.key === "Down" || e.key === "ArrowDown") {
     downPressed = true;
-
+    createGameObjects();
+    moveSnakeVertical();
     myTimer = setInterval(() => {
       createGameObjects();
       moveSnakeVertical();
@@ -76,13 +82,10 @@ function keyDownHandler(e) {
 function moveSnakeHorizontal() {
   if (snakeX < 0 || snakeX > canvas.width) {
     snakeSpeedX = -snakeSpeedX;
-    // clearInterval(myTimer);
-    // clearSnakeDirectionValues();
-    
-
+    resetGame();
   }
   if (leftPressed) {
-    if (snakeX >= unitSize) {
+    if (snakeX >= 0) {
       snakeX -= snakeSpeedX;
     }
   }
@@ -91,25 +94,22 @@ function moveSnakeHorizontal() {
       snakeX += snakeSpeedX;
     }
   }
-
 }
 
-function moveSnakeVertical() {  
-  if (snakeY < 0 || snakeY > canvas.height - unitSize) {
+function moveSnakeVertical() {
+  if (snakeY < 0 || snakeY > canvas.height) {
     snakeSpeedY = -snakeSpeedY;
-    // clearInterval(myTimer);
-    // clearSnakeDirectionValues();
-   
+    resetGame();
   }
   if (downPressed) {
-    snakeY += snakeSpeedY;
-    // if (snakeY < canvas.height - unitSize) {
-    // }
+    if (snakeY <= canvas.height) {
+      snakeY += snakeSpeedY;
+    }
   }
   if (upPressed) {
-    snakeY -= snakeSpeedY;
-    // if (snakeY >= unitSize) {
-    // }
+    if (snakeY >= 0) {
+      snakeY -= snakeSpeedY;
+    }
   }
 }
 function clearSnakeDirectionValues() {
@@ -117,6 +117,12 @@ function clearSnakeDirectionValues() {
   leftPressed = false;
   upPressed = false;
   downPressed = false;
+}
+
+function resetGame() {
+  clearInterval(myTimer);
+  clearSnakeDirectionValues();
+  displayGameOver();
 }
 
 function createGrid() {
@@ -137,28 +143,25 @@ function createGameObjects() {
   createGrid();
 
   // Snake Head
-  createRectangle(snakeX, snakeY, unitSize, unitSize, "#05386B");
+  createRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");
 
   createApple();
 
   checkForApple();
-
 }
-
-
 
 function createRectangle(leftX, topY, width, height, createColor) {
   canvasContext.fillStyle = createColor;
   canvasContext.fillRect(leftX, topY, width, height);
 }
 
-function createApple() {  
-  createRectangle(appleX, appleY, unitSize, unitSize, "#379683");
+function createApple() {
+  createRectangle(appleX, appleY, segmentSize, segmentSize, "#379683");
 }
 
 function randomAppleLocation() {
-  appleX = Math.floor(Math.random()*40)*20;
-  appleY = Math.floor(Math.random()*30)*20;
+  appleX = Math.floor(Math.random() * 40) * 20;
+  appleY = Math.floor(Math.random() * 30) * 20;
 }
 
 function checkForApple() {
@@ -166,5 +169,16 @@ function checkForApple() {
     clearInterval(myTimer);
     console.log("Apple Eaten");
   }
+}
 
+function displayGameOver() {
+  canvasContext.font = "72px Unknown Font, sans-serif";
+  canvasContext.fillStyle = "#05386B";
+  let displayText = "Game Over";
+  let displayTextSize = canvasContext.measureText(displayText);
+  canvasContext.fillText(
+    displayText,
+    canvas.width / 2 - displayTextSize.width / 2,
+    canvas.height / 2 - 36
+  );
 }
