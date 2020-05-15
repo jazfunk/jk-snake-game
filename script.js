@@ -1,9 +1,9 @@
-let canvas;
-let canvasDisplay;
+let canvas = document.getElementById("gameCanvas");
+let canvasContext = canvas.getContext("2d");
 
 let segmentSize = 20;
-let snakeX = 20;
-let snakeY = 40;
+let snakeX = canvas.width / 2;
+let snakeY = canvas.height / 2;
 let snakeSpeedX = 20;
 let snakeSpeedY = 20;
 
@@ -15,20 +15,16 @@ let appleY = 0;
 
 let myTimer;
 
-let rightPressed = false;
-let leftPressed = false;
-let upPressed = false;
-let downPressed = false;
-
-let appleEaten = false;
+let rightArrowKey = false;
+let leftArrowKey = false;
+let upArrowKey = false;
+let downArrowyKey = false;
 
 document.addEventListener("keydown", keyDownHandler, false);
 
 window.onload = () => {
-  canvas = document.getElementById("gameCanvas");
-  canvasContext = canvas.getContext("2d");
-  randomAppleLocation();
-  createGameObjects();
+  generateRandomAppleLocation();
+  renderGameObjects();
 };
 
 function keyDownHandler(e) {
@@ -42,45 +38,45 @@ function keyDownHandler(e) {
   let framesPerSecond = 5;
 
   if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = true;
-    horizontalRoutine();
+    rightArrowKey = true;
+    runHorizontalMethods();
     myTimer = setInterval(() => {
-      horizontalRoutine();
+      runHorizontalMethods();
     }, 1000 / framesPerSecond);
   }
 
   if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = true;
-    horizontalRoutine();
+    leftArrowKey = true;
+    runHorizontalMethods();
     myTimer = setInterval(() => {
-      horizontalRoutine();
+      runHorizontalMethods();
     }, 1000 / framesPerSecond);
   }
 
   if (e.key === "Up" || e.key === "ArrowUp") {
-    upPressed = true;
-    verticalRoutine();
+    upArrowKey = true;
+    runVerticalMethods();
     myTimer = setInterval(() => {
-      verticalRoutine();
+      runVerticalMethods();
     }, 1000 / framesPerSecond);
   }
 
   if (e.key === "Down" || e.key === "ArrowDown") {
-    downPressed = true;
-    verticalRoutine();
+    downArrowyKey = true;
+    runVerticalMethods();
     myTimer = setInterval(() => {
-      verticalRoutine();
+      runVerticalMethods();
     }, 1000 / framesPerSecond);
   }
 }
 
-function horizontalRoutine() {
-  createGameObjects();
+function runHorizontalMethods() {
+  renderGameObjects();
   moveSnakeHorizontal();
 }
 
-function verticalRoutine() {
-  createGameObjects();
+function runVerticalMethods() {
+  renderGameObjects();
   moveSnakeVertical();
 }
 
@@ -91,14 +87,14 @@ function moveSnakeHorizontal() {
     snakeY < 0 ||
     snakeY >= canvas.height
   ) {
-    resetGame();
+    endGame();
   }
 
   if (snakeY >= 0) {
-    if (leftPressed && snakeX >= 0) {
+    if (leftArrowKey && snakeX >= 0) {
       snakeX -= snakeSpeedX;
     }
-    if (rightPressed && snakeX <= canvas.width) {
+    if (rightArrowKey && snakeX <= canvas.width) {
       snakeX += snakeSpeedX;
     }
   }
@@ -111,38 +107,38 @@ function moveSnakeVertical() {
     snakeX < 0 ||
     snakeX >= canvas.width
   ) {
-    resetGame();
+    endGame();
   }
 
   if (snakeX >= 0) {
-    if (downPressed && snakeY <= canvas.height) {
+    if (downArrowyKey && snakeY <= canvas.height) {
       snakeY += snakeSpeedY;
     }
-    if (upPressed && snakeY >= 0) {
+    if (upArrowKey && snakeY >= 0) {
       snakeY -= snakeSpeedY;
     }
   }
 }
 
 function clearSnakeDirectionValues() {
-  rightPressed = false;
-  leftPressed = false;
-  upPressed = false;
-  downPressed = false;
+  rightArrowKey = false;
+  leftArrowKey = false;
+  upArrowKey = false;
+  downArrowyKey = false;
 }
 
-function resetGame() {
+function endGame() {
   clearInterval(myTimer);
   clearSnakeDirectionValues();
   displayGameOver();
 }
 
-function createGrid() {
+function renderGrid() {
   let gridColor = "#8EE4AF";
   for (let row = 0; row < canvas.height; row += 20) {
     for (let col = 0; col < canvas.width; col += 20) {
-      createRectangle(col + 20, row, 1, 20, gridColor);
-      createRectangle(col, row + 20, 20, 1, gridColor);
+      renderRectangle(col + 20, row, 1, 20, gridColor);
+      renderRectangle(col, row + 20, 20, 1, gridColor);
     }
   }
 }
@@ -153,98 +149,96 @@ function createGrid() {
 //   });
 // }
 
-function createSnake() {
+function renderSnake() {
 
-  createRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");
+  renderRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");
 
-//   2nd attempt to increase snake size by one, by creating a class and adding to 
-//   an object array
-//   Each time an apple is eaten, the snakeSegements variable is incremented by one
-//   in another method.
-//   Look each snakeSegment and build a SnakeSegment object, then
-//   add it to the snake[] object "array".
+//   // 2nd attempt to increase snake size by one, by creating a class and adding to 
+//   // an object array
+//   // Each time an apple is eaten, the snakeSegements variable is incremented by one
+//   // in another method.
+//   // Look at each snakeSegment and build a SnakeSegment object, then
+//   // add it to the snake[] object "array".
 
 //   for(let i = 0; i <= snakeSegments - 1; i++) {
 //     let offsetX = i * 20;
 //     let offsetY = i *20;
 
-//     // let segment = new SnakeSegment();
+//     let segment = new SnakeSegment();
 
-//     // segment.segmentX = snakeX;
-//     // segment.segmentY = snakeY;
-//     // segment.width = segmentSize;
-//     // segment.height = segmentSize;
+//     segment.segmentX = snakeX;
+//     segment.segmentY = snakeY;
+//     segment.width = segmentSize;
+//     segment.height = segmentSize;
 
-//     // if (i = 1) {
-//     //   segment.head = true;
-//     //   segment.segmentColor = "#5CDB95";
-//     // } else {
-//     //   segment.head = false;
-//     //   segment.segmentColor = "#05386B";
-//     // }
+//     if (i = 1) {
+//       segment.head = true;
+//       segment.segmentColor = "#5CDB95";
+//     } else {
+//       segment.head = false;
+//       segment.segmentColor = "#05386B";
+//     }
 
-//     // if (upPressed) {
-//     //   segment.direction = 0;
-//     // }
-//     // if (rightPressed) {
-//     //   segment.direction = 1;
-//     // }
-//     // if (downPressed) {
-//     //   segment.direction = 2;
-//     // }
-//     // if (leftPressed) {
-//     //   segment.direction = 3;
-//     // }
+//     if (upArrowKey) {
+//       segment.direction = 0;
+//     }
+//     if (rightArrowKey) {
+//       segment.direction = 1;
+//     }
+//     if (downArrowyKey) {
+//       segment.direction = 2;
+//     }
+//     if (leftArrowKey) {
+//       segment.direction = 3;
+//     }
 
-//     // snake.push(segment);
-
-
+//     snake.push(segment);
 
 
 
-//  1st attempt to increase snake size after eating apple //
 
-//    This increase the snake by one, but it shifts the 
-//    entire snake as one piece, so wrong approach
+// // //  1st attempt to increase snake size after eating apple //
+// // //    This increase the snake by one, but it shifts the 
+// // //    entire snake as one piece, so wrong approach
     
-//     if (leftPressed) {
-//       createRectangle(snakeX + offsetX, snakeY, segmentSize, segmentSize, "#05386B");    
-//     }
-//     if (rightPressed) {
-//       createRectangle(snakeX - offsetX, snakeY, segmentSize, segmentSize, "#05386B");    
-//     }
-//     if (downPressed) {
-//       createRectangle(snakeX, snakeY - offsetY, segmentSize, segmentSize, "#05386B");    
-//     }
-//     if (upPressed) {
-//       createRectangle(snakeX, snakeY + offsetY, segmentSize, segmentSize, "#05386B");    
-//     }       
+// //     if (leftArrowKey) {
+// //       renderRectangle(snakeX + offsetX, snakeY, segmentSize, segmentSize, "#05386B");    
+// //     }
+// //     if (rightArrowKey) {
+// //       renderRectangle(snakeX - offsetX, snakeY, segmentSize, segmentSize, "#05386B");    
+// //     }
+// //     if (downArrowyKey) {
+// //       renderRectangle(snakeX, snakeY - offsetY, segmentSize, segmentSize, "#05386B");    
+// //     }
+// //     if (upArrowKey) {
+// //       renderRectangle(snakeX, snakeY + offsetY, segmentSize, segmentSize, "#05386B");    
+// //     }       
 //   }
-// }
 }
 
-function createGameObjects() {  
-  createRectangle(0, 0, canvas.width, canvas.height, "#5CDB95");
 
-  createGrid();
+function renderGameObjects() {  
+  renderRectangle(0, 0, canvas.width, canvas.height, "#5CDB95");
 
-  createSnake();
+  renderGrid();
 
-  createApple();
+  renderSnake();
+
+  renderApple();
 
   checkForApple();
 }
 
-function createRectangle(leftX, topY, width, height, createColor) {
+function renderRectangle(leftX, topY, width, height, createColor) {
   canvasContext.fillStyle = createColor;
   canvasContext.fillRect(leftX, topY, width, height);
 }
 
-function createApple() {
-  createRectangle(appleX, appleY, segmentSize, segmentSize, "#379683");
+function renderApple() {
+  renderRectangle(appleX, appleY, segmentSize, segmentSize, "#379683");
 }
 
-function randomAppleLocation() {
+function generateRandomAppleLocation() {
   appleX = Math.floor(Math.random() * 40) * 20;
   appleY = Math.floor(Math.random() * 30) * 20;
 }
@@ -253,7 +247,7 @@ function checkForApple() {
   if (snakeX === appleX && snakeY === appleY) {
     snakeSegments++;
     console.log("Apple Eaten");
-    randomAppleLocation();
+    generateRandomAppleLocation();
   }
 }
 
