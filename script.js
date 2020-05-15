@@ -1,7 +1,7 @@
 let canvas;
 let canvasDisplay;
 
-let unitSize = 20;
+let segmentSize = 20;
 let snakeX = 20;
 let snakeY = 40;
 let snakeSpeedX = 20;
@@ -24,100 +24,114 @@ document.addEventListener("keydown", keyDownHandler, false);
 window.onload = () => {
   canvas = document.getElementById("gameCanvas");
   canvasContext = canvas.getContext("2d");
-  // let randomApple = randomAppleLocation();
-  // appleX = randomApple[0];
-  // appleX = randomApple[1];
+  randomAppleLocation();
+  createGameObjects();
 };
 
 function keyDownHandler(e) {
-  e.preventDefault();
+  if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+    e.preventDefault();
+  }
 
   clearSnakeDirectionValues();
   clearInterval(myTimer);
 
-  let framesPerSecond = 10;
+  let framesPerSecond = 5;
 
   if (e.key === "Right" || e.key === "ArrowRight") {
     rightPressed = true;
-
+    horizontalRoutine();
     myTimer = setInterval(() => {
-      createGameObjects();
-      moveSnakeHorizontal();
+      horizontalRoutine();
     }, 1000 / framesPerSecond);
   }
 
   if (e.key === "Left" || e.key === "ArrowLeft") {
     leftPressed = true;
-
+    horizontalRoutine();
     myTimer = setInterval(() => {
-      createGameObjects();
-      moveSnakeHorizontal();
+      horizontalRoutine();
     }, 1000 / framesPerSecond);
   }
 
   if (e.key === "Up" || e.key === "ArrowUp") {
     upPressed = true;
-
+    verticalRoutine();
     myTimer = setInterval(() => {
-      createGameObjects();
-      moveSnakeVertical();
+      verticalRoutine();
     }, 1000 / framesPerSecond);
   }
 
   if (e.key === "Down" || e.key === "ArrowDown") {
     downPressed = true;
-
+    verticalRoutine();
     myTimer = setInterval(() => {
-      createGameObjects();
-      moveSnakeVertical();
+      verticalRoutine();
     }, 1000 / framesPerSecond);
   }
 }
 
-function moveSnakeHorizontal() {
-  if (snakeX < 0 || snakeX > canvas.width) {
-    snakeSpeedX = -snakeSpeedX;
-    // clearInterval(myTimer);
-    // clearSnakeDirectionValues();
-    
+function horizontalRoutine() {
+  createGameObjects();
+  moveSnakeHorizontal();
+}
 
+function verticalRoutine() {
+  createGameObjects();
+  moveSnakeVertical();
+}
+
+function moveSnakeHorizontal() {
+  if (
+    snakeX < 0 ||
+    snakeX > canvas.width ||
+    snakeY < 0 ||
+    snakeY >= canvas.height
+  ) {
+    resetGame();
   }
-  if (leftPressed) {
-    if (snakeX >= unitSize) {
+
+  if (snakeY >= 0) {
+    if (leftPressed && snakeX >= 0) {
       snakeX -= snakeSpeedX;
     }
-  }
-  if (rightPressed) {
-    if (snakeX <= canvas.width) {
+    if (rightPressed && snakeX <= canvas.width) {
       snakeX += snakeSpeedX;
     }
   }
-
 }
 
-function moveSnakeVertical() {  
-  if (snakeY < 0 || snakeY > canvas.height - unitSize) {
-    snakeSpeedY = -snakeSpeedY;
-    // clearInterval(myTimer);
-    // clearSnakeDirectionValues();
-   
+function moveSnakeVertical() {
+  if (
+    snakeY < 0 ||
+    snakeY > canvas.height ||
+    snakeX < 0 ||
+    snakeX >= canvas.width
+  ) {
+    resetGame();
   }
-  if (downPressed) {
-    snakeY += snakeSpeedY;
-    // if (snakeY < canvas.height - unitSize) {
-    // }
-  }
-  if (upPressed) {
-    snakeY -= snakeSpeedY;
-    // if (snakeY >= unitSize) {
-    // }
+
+  if (snakeX >= 0) {
+    if (downPressed && snakeY <= canvas.height) {
+      snakeY += snakeSpeedY;
+    }
+    if (upPressed && snakeY >= 0) {
+      snakeY -= snakeSpeedY;
+    }
   }
 }
+
 function clearSnakeDirectionValues() {
   rightPressed = false;
   leftPressed = false;
   upPressed = false;
   downPressed = false;
+}
+
+function resetGame() {
+  clearInterval(myTimer);
+  clearSnakeDirectionValues();
+  displayGameOver();
 }
 
 function createGrid() {
@@ -138,10 +152,11 @@ function createGameObjects() {
   createGrid();
 
   // Snake Head
-  createRectangle(snakeX, snakeY, unitSize, unitSize, "#05386B");
+  createRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");
 
-  // createApple();
+  createApple();
 
+  checkForApple();
 }
 
 function createRectangle(leftX, topY, width, height, createColor) {
@@ -149,18 +164,30 @@ function createRectangle(leftX, topY, width, height, createColor) {
   canvasContext.fillRect(leftX, topY, width, height);
 }
 
-function createApple() {  
-
-  createRectangle(appleX, appleY, unitSize, unitSize, "#379683");
-  
-
+function createApple() {
+  createRectangle(appleX, appleY, segmentSize, segmentSize, "#379683");
 }
 
 function randomAppleLocation() {
-  let randomX = Math.floor(Math.random()*40)*20;
-  let randomY = Math.floor(Math.random()*30)*20;
+  appleX = Math.floor(Math.random() * 40) * 20;
+  appleY = Math.floor(Math.random() * 30) * 20;
+}
 
-  // return location = [randomX, randomY];  
-  // console.log(randomX, randomY);
+function checkForApple() {
+  if (snakeX === appleX && snakeY === appleY) {
+    clearInterval(myTimer);
+    console.log("Apple Eaten");
+  }
+}
 
+function displayGameOver() {
+  canvasContext.font = "52px Unknown Font, sans-serif";
+  canvasContext.fillStyle = "#05386B";
+  let displayText = "Game Over - Refresh to try again.";
+  let displayTextSize = canvasContext.measureText(displayText);
+  canvasContext.fillText(
+    displayText,
+    canvas.width / 2 - displayTextSize.width / 2,
+    canvas.height / 2 - 36
+  );
 }
