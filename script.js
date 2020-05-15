@@ -156,6 +156,29 @@ function createGrid() {
   }
 }
 
+function createSnake() {
+  for(let i = 1; i <= snakeSegments; i++) {
+    let offsetX = i * 20;
+    let offsetY = i *20;
+    
+    if (leftPressed) {
+      createRectangle(snakeX + offsetX, snakeY, segmentSize, segmentSize, "#05386B");    
+    }
+    if (rightPressed) {
+      createRectangle(snakeX - offsetX, snakeY, segmentSize, segmentSize, "#05386B");    
+    }
+    if (downPressed) {
+      createRectangle(snakeX, snakeY - offsetY, segmentSize, segmentSize, "#05386B");    
+    }
+    if (upPressed) {
+      createRectangle(snakeX, snakeY + offsetY, segmentSize, segmentSize, "#05386B");    
+    }
+    
+    
+    // createRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");    
+  }
+}
+
 function createGameObjects() {
   // Game background
   createRectangle(0, 0, canvas.width, canvas.height, "#5CDB95");
@@ -163,7 +186,8 @@ function createGameObjects() {
   createGrid();
 
   // Snake Head
-  createRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");
+  // createRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");
+  createSnake();
 
   createApple();
 
@@ -186,8 +210,10 @@ function randomAppleLocation() {
 
 function checkForApple() {
   if (snakeX === appleX && snakeY === appleY) {
-    clearInterval(myTimer);
+    // clearInterval(myTimer);
+    snakeSegments++;
     console.log("Apple Eaten");
+    randomAppleLocation();
   }
 }
 
