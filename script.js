@@ -40,78 +40,87 @@ function keyDownHandler(e) {
 
   if (e.key === "Right" || e.key === "ArrowRight") {
     rightPressed = true;
-    createGameObjects();
-    moveSnakeHorizontal();
+    horizontalRoutine();
     myTimer = setInterval(() => {
-      createGameObjects();
-      moveSnakeHorizontal();
+      horizontalRoutine();
     }, 1000 / framesPerSecond);
   }
 
   if (e.key === "Left" || e.key === "ArrowLeft") {
     leftPressed = true;
-    createGameObjects();
-    moveSnakeHorizontal();
+    horizontalRoutine();
     myTimer = setInterval(() => {
-      createGameObjects();
-      moveSnakeHorizontal();
+      horizontalRoutine();
     }, 1000 / framesPerSecond);
   }
 
   if (e.key === "Up" || e.key === "ArrowUp") {
     upPressed = true;
-    createGameObjects();
-    moveSnakeVertical();
+    verticalRoutine();
     myTimer = setInterval(() => {
-      createGameObjects();
-      moveSnakeVertical();
+      verticalRoutine();
     }, 1000 / framesPerSecond);
   }
 
   if (e.key === "Down" || e.key === "ArrowDown") {
     downPressed = true;
-    createGameObjects();
-    moveSnakeVertical();
+    verticalRoutine();
     myTimer = setInterval(() => {
-      createGameObjects();
-      moveSnakeVertical();
+      verticalRoutine();
     }, 1000 / framesPerSecond);
   }
 }
 
+function horizontalRoutine() {
+  createGameObjects();
+  moveSnakeHorizontal();
+}
+
+function verticalRoutine() {
+  createGameObjects();
+  moveSnakeVertical();
+}
+
 function moveSnakeHorizontal() {
-  if (snakeX < 0 || snakeX > canvas.width) {
-    snakeSpeedX = -snakeSpeedX;
+  if (
+    snakeX < 0 ||
+    snakeX > canvas.width ||
+    snakeY < 0 ||
+    snakeY >= canvas.height
+  ) {
     resetGame();
   }
-  if (leftPressed) {
-    if (snakeX >= 0) {
+
+  if (snakeY >= 0) {
+    if (leftPressed && snakeX >= 0) {
       snakeX -= snakeSpeedX;
     }
-  }
-  if (rightPressed) {
-    if (snakeX <= canvas.width) {
+    if (rightPressed && snakeX <= canvas.width) {
       snakeX += snakeSpeedX;
     }
   }
 }
 
 function moveSnakeVertical() {
-  if (snakeY < 0 || snakeY > canvas.height) {
-    snakeSpeedY = -snakeSpeedY;
+  if (
+    snakeY < 0 ||
+    snakeY > canvas.height ||
+    snakeX < 0 ||
+    snakeX >= canvas.width
+  ) {
     resetGame();
   }
-  if (downPressed) {
-    if (snakeY <= canvas.height) {
+
+  if (snakeX >= 0) {
+    if (downPressed && snakeY <= canvas.height) {
       snakeY += snakeSpeedY;
     }
-  }
-  if (upPressed) {
-    if (snakeY >= 0) {
+    if (upPressed && snakeY >= 0) {
       snakeY -= snakeSpeedY;
     }
   }
 }
+
 function clearSnakeDirectionValues() {
   rightPressed = false;
   leftPressed = false;
