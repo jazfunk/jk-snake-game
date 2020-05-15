@@ -7,6 +7,9 @@ let snakeY = 40;
 let snakeSpeedX = 20;
 let snakeSpeedY = 20;
 
+let snakeSegments = 1;
+let snake = [];
+
 let appleX = 0;
 let appleY = 0;
 
@@ -134,6 +137,14 @@ function resetGame() {
   displayGameOver();
 }
 
+function createSnake() {
+  for (let segment = 0; segment < snakeSegments; index++) {
+    // if left or right add/subtract from x
+    // if up or down add/subtract from y
+    createRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");
+  }
+}
+
 function createGrid() {
   let gridColor = "#8EE4AF";
   // let gridColor = "#379683";
@@ -183,7 +194,7 @@ function checkForApple() {
 function displayGameOver() {
   canvasContext.font = "52px Unknown Font, sans-serif";
   canvasContext.fillStyle = "#05386B";
-  let displayText = "Game Over - Refresh to try again.";
+  let displayText = "Game Over";
   let displayTextSize = canvasContext.measureText(displayText);
   canvasContext.fillText(
     displayText,
