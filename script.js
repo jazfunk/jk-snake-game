@@ -9,8 +9,8 @@ let snakeSpeedY = 20;
 
 const snake = [
   { x: canvas.width / 2, y: canvas.height / 2 },
-  { x: canvas.width / 2, y: (canvas.height / 2) + segmentSize}
-]
+  { x: canvas.width / 2, y: canvas.height / 2 + segmentSize },
+];
 
 let appleX = 0;
 let appleY = 0;
@@ -20,7 +20,7 @@ let myTimer;
 let rightArrowKey = false;
 let leftArrowKey = false;
 let upArrowKey = false;
-let downArrowyKey = false;
+let downArrowKey = false;
 
 document.addEventListener("keydown", keyDownHandler, false);
 
@@ -64,7 +64,7 @@ function keyDownHandler(e) {
   }
 
   if (e.key === "Down" || e.key === "ArrowDown") {
-    downArrowyKey = true;
+    downArrowKey = true;
     runVerticalMethods();
     myTimer = setInterval(() => {
       runVerticalMethods();
@@ -73,60 +73,46 @@ function keyDownHandler(e) {
 }
 
 function runHorizontalMethods() {
-  renderGameObjects();
   moveSnakeHorizontal();
+  renderGameObjects();
 }
 
 function runVerticalMethods() {
-  renderGameObjects();
   moveSnakeVertical();
+  renderGameObjects();
 }
 
 function moveSnakeHorizontal() {
-  if (
-    snakeX < 0 ||
-    snakeX > canvas.width ||
-    snakeY < 0 ||
-    snakeY >= canvas.height
-  ) {
-    endGame();
-  }
-
-  if (snakeY >= 0) {
-    if (leftArrowKey && snakeX >= 0) {
-      snakeX -= snakeSpeedX;
+  snake.forEach((segment) => {
+    if (segment.y >= 0) {
+      if (leftArrowKey && segment.x >= 0) {
+        segment.x -= snakeSpeedX;
+      }
+      if (rightArrowKey && segment.x <= canvas.width) {
+        segment.x += snakeSpeedX;
+      }
     }
-    if (rightArrowKey && snakeX <= canvas.width) {
-      snakeX += snakeSpeedX;
-    }
-  }
+  });
 }
 
 function moveSnakeVertical() {
-  if (
-    snakeY < 0 ||
-    snakeY > canvas.height ||
-    snakeX < 0 ||
-    snakeX >= canvas.width
-  ) {
-    endGame();
-  }
-
-  if (snakeX >= 0) {
-    if (downArrowyKey && snakeY <= canvas.height) {
-      snakeY += snakeSpeedY;
+  snake.forEach((segment) => {
+    if (segment.x >= 0) {
+      if (upArrowKey && segment.y >= 0) {
+        segment.y -= snakeSpeedY;
+      }
+      if (downArrowKey && segment.y <= canvas.height) {
+        segment.y += snakeSpeedY;
+      }
     }
-    if (upArrowKey && snakeY >= 0) {
-      snakeY -= snakeSpeedY;
-    }
-  }
+  });
 }
 
 function clearSnakeDirectionValues() {
   rightArrowKey = false;
   leftArrowKey = false;
   upArrowKey = false;
-  downArrowyKey = false;
+  downArrowKey = false;
 }
 
 function endGame() {
@@ -150,12 +136,11 @@ function renderGrid() {
 }
 
 function renderSnake() {
+  snake.forEach((segment) => {
+    renderRectangle(segment.x, segment.y, segmentSize, segmentSize, "#05386B");
+  });
 
-  // snake.forEach((segment) => {
-  //   renderRectangle(segment.x, segment.y, segmentSize, segmentSize, "#05386B");
-  // });
-
-  renderRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");
+  // renderRectangle(snakeX, snakeY, segmentSize, segmentSize, "#05386B");
 }
 
 function renderGameObjects() {
