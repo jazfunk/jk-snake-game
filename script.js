@@ -151,6 +151,8 @@ function renderGameObjects() {
 
   if (isSnakeEatingApple()) {
     console.log("Apple Eaten");
+    let newSnakeSegment = [{ x: appleX, y: appleY }];
+    snake.push(newSnakeSegment);
     generateRandomAppleLocation();
   }
 }
@@ -170,6 +172,8 @@ function generateRandomAppleLocation() {
 }
 
 function isSnakeEatingApple() {
+  // let newSnakeSegment = [{ x: appleX, y: appleY }];
+  // snake.push[newSnakeSegment];
   return snakeX === appleX && snakeY === appleY;
 }
 
