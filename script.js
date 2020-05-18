@@ -93,8 +93,17 @@ function keyDownHandler(e) {
   }
 }
 
+const differenceBetweenTwoNumbers = (a, b) => {
+  return a > b ? a - b : b - a;
+};
+
 function moveSnake(direction) {
   snake.forEach((segment) => {
+    // restrict backwards movement
+    if (differenceBetweenTwoNumbers(direction, segment.direction) === 2) {
+      return;
+    }
+
     // Initialize direction
     if (segment.direction === null) {
       segment.direction = direction;
@@ -109,19 +118,21 @@ function moveSnake(direction) {
       }
     }
 
+    // Set next pivot x, y.
+    // if (segment.pivotX === null && segment.pivotY === null) {
+    if (nextPivotPoint.length > 0) {
+      segment.pivotX = nextPivotPoint[0];
+      segment.pivotY = nextPivotPoint[1];
+      segment.pivotDirection = direction;
+    }
+    // }
+
     //  Check to see if we're at the next pivot point
     if (segment.x === nextPivotPoint[0] && segment.y === nextPivotPoint[1]) {
       if (segment.pivotDirection !== null) {
-        segment.direction = segment.pivotDirection;
-      }
-    }
-
-    // Set next pivot x, y.
-    if (segment.pivotX === null && segment.pivotY === null) {
-      if (nextPivotPoint.length > 0) {
-        segment.pivotX = nextPivotPoint[0];
-        segment.pivotY = nextPivotPoint[1];
-        segment.pivotDirection = direction;
+        if (segment !== snake[0]) {
+          segment.direction = segment.pivotDirection;
+        }
       }
     }
 
@@ -192,21 +203,12 @@ function renderSnakeOLD() {
 }
 
 function renderGameObjects() {
-  canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-
   renderBackground();
   renderGrid();
   renderSnake(snake);
   renderApple();
 
   if (isSnakeEatingApple()) {
-
-    // if lastSegment.direction is up/right/down/left
-    // push new object to snake array with
-    // coordinates that put it at the end of the snake.
-    // Tricky because you have to determine the direction of
-    // the last segment.
-
     const lastSegment = snake.slice(-1)[0];
     let newSegmentX = lastSegment.x;
     let newSegmentY = lastSegment.y;
@@ -225,16 +227,15 @@ function renderGameObjects() {
         break;
       default:
     }
-
     console.log("Apple Eaten");
     snake.push({
       x: newSegmentX,
       y: newSegmentY,
-      direction: null,
-      pivotX: null,
-      pivotY: null,
-      pivotDirection: null,
-      color: "#05386B",
+      direction: lastSegment.direction,
+      pivotX: lastSegment.pivotX,
+      pivotY: lastSegment.pivotY,
+      pivotDirection: lastSegment.pivotDirection,
+      color: lastSegment.color,
     });
     generateRandomAppleLocation();
   }
