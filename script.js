@@ -200,14 +200,14 @@ function renderGameObjects() {
   renderApple();
 
   if (isSnakeEatingApple()) {
-    
+
     // if lastSegment.direction is up/right/down/left
     // push new object to snake array with
     // coordinates that put it at the end of the snake.
     // Tricky because you have to determine the direction of
     // the last segment.
 
-    const lastSegment = snake.splice(-1);
+    const lastSegment = snake.slice(-1)[0];
     let newSegmentX = lastSegment.x;
     let newSegmentY = lastSegment.y;
     switch (lastSegment.direction) {
