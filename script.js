@@ -6,16 +6,14 @@ let snakeX = canvas.width / 2;
 let snakeY = canvas.height / 2;
 let snakeSpeed = 20;
 
-let snakeSpeedX = 20;
-let snakeSpeedY = 20;
-
 const snake = [
   {
     x: canvas.width / 2,
     y: canvas.height / 2,
     direction: null,
     pivotX: null,
-    pixvotY: null,
+    pivotY: null,
+    pivotDirection: null,
     color: null,
   },
   {
@@ -23,24 +21,36 @@ const snake = [
     y: canvas.height / 2 + segmentSize,
     direction: null,
     pivotX: null,
-    pixvotY: null,
+    pivotY: null,
+    pivotDirection: null,
+    color: null,
+  },
+  {
+    x: canvas.width / 2,
+    y: canvas.height / 2 + segmentSize * 2,
+    direction: null,
+    pivotX: null,
+    pivotY: null,
+    pivotDirection: null,
+    color: null,
+  },
+  {
+    x: canvas.width / 2,
+    y: canvas.height / 2 + segmentSize * 3,
+    direction: null,
+    pivotX: null,
+    pivotY: null,
+    pivotDirection: null,
     color: null,
   },
 ];
 
 let nextPivotPoint = [];
-let snakeHeadDirection = null;
 
 let appleX = 0;
 let appleY = 0;
 
 let myTimer;
-
-// 0 = Up
-// 1 = Right
-// 2 = Down
-// 3 = Left
-
 
 document.addEventListener("keydown", keyDownHandler, false);
 
@@ -53,56 +63,46 @@ function keyDownHandler(e) {
   if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
     e.preventDefault();
   }
-
   clearInterval(myTimer);
 
-  const framesPerSecond = 5;
+  const FRAMES_PER_SECOND = 5;
+  let direction = null;
+
   if (e.key === "Up" || e.key === "ArrowUp") {
-    // renderGameObjects();
-    // moveSnake(0);
-    myTimer = setInterval(() => {
-      renderGameObjects();
-      moveSnake(0);
-    }, 1000 / framesPerSecond);
+    direction = 0;
   }
 
   if (e.key === "Right" || e.key === "ArrowRight") {
-    // renderGameObjects();
-    // moveSnake(1);
-    myTimer = setInterval(() => {
-      renderGameObjects();
-      moveSnake(1);
-    }, 1000 / framesPerSecond);
+    direction = 1;
   }
 
   if (e.key === "Down" || e.key === "ArrowDown") {
-    // renderGameObjects();
-    // moveSnake(2);
-    myTimer = setInterval(() => {
-      renderGameObjects();
-      moveSnake(2);
-    }, 1000 / framesPerSecond);
+    direction = 2;
   }
 
   if (e.key === "Left" || e.key === "ArrowLeft") {
-    // renderGameObjects();
-    // moveSnake(3);
+    direction = 3;
+  }
+
+  if (direction !== null) {
+    renderGameObjects();
     myTimer = setInterval(() => {
+      moveSnake(direction);
       renderGameObjects();
-      moveSnake(3);
-    }, 1000 / framesPerSecond);
+    }, 1000 / FRAMES_PER_SECOND);
   }
 }
 
 function moveSnake(direction) {
   snake.forEach((segment) => {
+    // Initialize direction
     if (segment.direction === null) {
       segment.direction = direction;
     }
 
+    // Set snake head direction and pivot points if changing directions
     if (segment === snake[0]) {
       if (segment.direction !== direction) {
-        snakeHeadDirection = direction;
         segment.direction = direction;
         nextPivotPoint[0] = segment.x;
         nextPivotPoint[1] = segment.y;
@@ -111,16 +111,19 @@ function moveSnake(direction) {
 
     //  Check to see if we're at the next pivot point
     if (segment.x === nextPivotPoint[0] && segment.y === nextPivotPoint[1]) {
-      segment.direction = direction;
-    }
-
-    if (segment.pivotX === null && segment.pivotY === null) {
-      if (nextPivotPoint === null) {
-        segment.pivotX = nextPivotPoint[0];
-        segment.pivotY = nextPivotPoint[1];
+      if (segment.pivotDirection !== null) {
+        segment.direction = segment.pivotDirection;
       }
     }
-   
+
+    // Set next pivot x, y.
+    if (segment.pivotX === null && segment.pivotY === null) {
+      if (nextPivotPoint.length > 0) {
+        segment.pivotX = nextPivotPoint[0];
+        segment.pivotY = nextPivotPoint[1];
+        segment.pivotDirection = direction;
+      }
+    }
 
     switch (segment.direction) {
       case 0:
@@ -142,17 +145,12 @@ function moveSnake(direction) {
       default:
     }
   });
-  renderSnake(snake);
-
-
-  //  Reset for next view with values set above
-
 }
 
 function renderSnake(snake) {
   snake.forEach((segment) => {
     if (segment === snake[0]) {
-      segment.color = "#5CDB95";
+      segment.color = "#379683";
     } else {
       segment.color = "#05386B";
     }
@@ -166,39 +164,6 @@ function renderSnake(snake) {
     );
   });
 }
-
-// function moveSnakeHorizontal() {
-//   snake.forEach((segment) => {
-//     if (segment.y >= 0) {
-//       if (leftArrowKey && segment.x >= 0) {
-//         segment.x -= snakeSpeedX;
-//       }
-//       if (rightArrowKey && segment.x <= canvas.width) {
-//         segment.x += snakeSpeedX;
-//       }
-//     }
-//   });
-// }
-
-// function moveSnakeVertical() {
-//   snake.forEach((segment) => {
-//     if (segment.x >= 0) {
-//       if (upArrowKey && segment.y >= 0) {
-//         segment.y -= snakeSpeedY;
-//       }
-//       if (downArrowKey && segment.y <= canvas.height) {
-//         segment.y += snakeSpeedY;
-//       }
-//     }
-//   });
-// }
-
-// function clearSnakeDirectionValues() {
-//   rightArrowKey = false;
-//   leftArrowKey = false;
-//   upArrowKey = false;
-//   downArrowKey = false;
-// }
 
 function endGame() {
   clearInterval(myTimer);
@@ -231,14 +196,46 @@ function renderGameObjects() {
 
   renderBackground();
   renderGrid();
-  renderSnake;
-  // renderSnakeOLD();
+  renderSnake(snake);
   renderApple();
 
   if (isSnakeEatingApple()) {
+    
+    // if lastSegment.direction is up/right/down/left
+    // push new object to snake array with
+    // coordinates that put it at the end of the snake.
+    // Tricky because you have to determine the direction of
+    // the last segment.
+
+    const lastSegment = snake.splice(-1);
+    let newSegmentX = lastSegment.x;
+    let newSegmentY = lastSegment.y;
+    switch (lastSegment.direction) {
+      case 0:
+        newSegmentY += segmentSize;
+        break;
+      case 1:
+        newSegmentX -= segmentSize;
+        break;
+      case 2:
+        newSegmentY -= segmentSize;
+        break;
+      case 3:
+        newSegmentX += segmentSize;
+        break;
+      default:
+    }
+
     console.log("Apple Eaten");
-    let newSnakeSegment = [{ x: appleX, y: appleY }];
-    snake.push(newSnakeSegment);
+    snake.push({
+      x: newSegmentX,
+      y: newSegmentY,
+      direction: null,
+      pivotX: null,
+      pivotY: null,
+      pivotDirection: null,
+      color: "#05386B",
+    });
     generateRandomAppleLocation();
   }
 }
@@ -258,9 +255,7 @@ function generateRandomAppleLocation() {
 }
 
 function isSnakeEatingApple() {
-  // let newSnakeSegment = [{ x: appleX, y: appleY }];
-  // snake.push[newSnakeSegment];
-  return snakeX === appleX && snakeY === appleY;
+  return snake[0].x === appleX && snake[0].y === appleY;
 }
 
 function displayGameOver() {
