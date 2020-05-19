@@ -3,14 +3,7 @@ body {
   padding: 0;
   background-color: #5cdb95;
   text-align: center;
-  /* border: 1px solid black; */
 }
-
-/* input[type="number"]::-webkit-inner-spin-button, */
-/* input[type="number"]::-webkit-outer-spin-button { */
-  /* -webkit-appearance: none; */
-  /* margin: 0; */
-/* } */
 
 header {
   border-bottom: 1px solid #05386B;
@@ -49,7 +42,6 @@ h1 {
   padding: 10px 30px;
   margin: 0 auto;
 }
-
 h2 {
   font-size: 16px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -92,8 +84,6 @@ h5 {
   font-weight: bold;
   color: #05386B;
 }
-
-
 
 footer {
   text-align: center;
