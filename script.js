@@ -1,63 +1,43 @@
 let canvas = document.getElementById("gameCanvas");
 let canvasContext = canvas.getContext("2d");
 
-let segmentSize = 20;
-let snakeX = canvas.width / 2;
-let snakeY = canvas.height / 2;
-let snakeSpeed = 20;
+const SEGMENT_SIZE = 20;
+const SNAKE_SPEED = 20;
 
 const snake = [
   {
     x: canvas.width / 2,
     y: canvas.height / 2,
-    direction: null,
-    pivotX: null,
-    pivotY: null,
-    pivotDirection: null,
     color: null,
   },
   {
     x: canvas.width / 2,
-    y: canvas.height / 2 + segmentSize,
-    direction: null,
-    pivotX: null,
-    pivotY: null,
-    pivotDirection: null,
+    y: canvas.height / 2 + SEGMENT_SIZE,
     color: null,
   },
   {
     x: canvas.width / 2,
-    y: canvas.height / 2 + segmentSize * 2,
-    direction: null,
-    pivotX: null,
-    pivotY: null,
-    pivotDirection: null,
+    y: canvas.height / 2 + SEGMENT_SIZE * 2,
     color: null,
   },
   {
     x: canvas.width / 2,
-    y: canvas.height / 2 + segmentSize * 3,
-    direction: null,
-    pivotX: null,
-    pivotY: null,
-    pivotDirection: null,
+    y: canvas.height / 2 + SEGMENT_SIZE * 3,
     color: null,
   },
 ];
-
-let nextPivotPoint = [];
 
 let appleX = 0;
 let appleY = 0;
 
 let myTimer;
 
-document.addEventListener("keydown", keyDownHandler, false);
-
 window.onload = () => {
   generateRandomAppleLocation();
   renderGameObjects();
 };
+
+document.addEventListener("keydown", keyDownHandler, false);
 
 function keyDownHandler(e) {
   if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
@@ -69,19 +49,19 @@ function keyDownHandler(e) {
   let direction = null;
 
   if (e.key === "Up" || e.key === "ArrowUp") {
-    direction = 0;
+    direction = "up";
   }
 
   if (e.key === "Right" || e.key === "ArrowRight") {
-    direction = 1;
+    direction = "right";
   }
 
   if (e.key === "Down" || e.key === "ArrowDown") {
-    direction = 2;
+    direction = "down";
   }
 
   if (e.key === "Left" || e.key === "ArrowLeft") {
-    direction = 3;
+    direction = "left";
   }
 
   if (direction !== null) {
@@ -93,68 +73,36 @@ function keyDownHandler(e) {
   }
 }
 
-const differenceBetweenTwoNumbers = (a, b) => {
-  return a > b ? a - b : b - a;
-};
-
 function moveSnake(direction) {
+  let currentSegment = [];
+  let nextSegment = [];
+
   snake.forEach((segment) => {
-    // restrict backwards movement
-    if (differenceBetweenTwoNumbers(direction, segment.direction) === 2) {
-      return;
-    }
+    currentSegment[0] = segment.x;
+    currentSegment[1] = segment.y;
 
-    // Initialize direction
-    if (segment.direction === null) {
-      segment.direction = direction;
-    }
-
-    // Set snake head direction and pivot points if changing directions
-    if (segment === snake[0]) {
-      if (segment.direction !== direction) {
-        segment.direction = direction;
-        nextPivotPoint[0] = segment.x;
-        nextPivotPoint[1] = segment.y;
+    if (segment !== snake[0]) {
+      segment.x = nextSegment[0];
+      segment.y = nextSegment[1];
+    } else {
+      switch (direction) {
+        case "up":
+          segment.y -= SNAKE_SPEED;
+          break;
+        case "right":
+          segment.x += SNAKE_SPEED;
+          break;
+        case "down":
+          segment.y += SNAKE_SPEED;
+          break;
+        case "left":
+          segment.x -= SNAKE_SPEED;
+          break;
+        default:
       }
     }
-
-    // Set next pivot x, y.
-    // if (segment.pivotX === null && segment.pivotY === null) {
-    if (nextPivotPoint.length > 0) {
-      segment.pivotX = nextPivotPoint[0];
-      segment.pivotY = nextPivotPoint[1];
-      segment.pivotDirection = direction;
-    }
-    // }
-
-    //  Check to see if we're at the next pivot point
-    if (segment.x === nextPivotPoint[0] && segment.y === nextPivotPoint[1]) {
-      if (segment.pivotDirection !== null) {
-        if (segment !== snake[0]) {
-          segment.direction = segment.pivotDirection;
-        }
-      }
-    }
-
-    switch (segment.direction) {
-      case 0:
-        // Move Up
-        segment.y -= snakeSpeed;
-        break;
-      case 1:
-        // Move Right
-        segment.x += snakeSpeed;
-        break;
-      case 2:
-        // Move Down
-        segment.y += snakeSpeed;
-        break;
-      case 3:
-        // Move Left
-        segment.x -= snakeSpeed;
-        break;
-      default:
-    }
+    nextSegment[0] = currentSegment[0];
+    nextSegment[1] = currentSegment[1];
   });
 }
 
@@ -169,8 +117,8 @@ function renderSnake(snake) {
     renderRectangle(
       segment.x,
       segment.y,
-      segmentSize,
-      segmentSize,
+      SEGMENT_SIZE,
+      SEGMENT_SIZE,
       segment.color
     );
   });
@@ -196,12 +144,6 @@ function renderGrid() {
   }
 }
 
-function renderSnakeOLD() {
-  snake.forEach((segment) => {
-    renderRectangle(segment.x, segment.y, segmentSize, segmentSize, "#05386B");
-  });
-}
-
 function renderGameObjects() {
   renderBackground();
   renderGrid();
@@ -213,28 +155,27 @@ function renderGameObjects() {
     let newSegmentX = lastSegment.x;
     let newSegmentY = lastSegment.y;
     switch (lastSegment.direction) {
-      case 0:
-        newSegmentY += segmentSize;
+      case "up":
+        newSegmentY += SEGMENT_SIZE;
         break;
-      case 1:
-        newSegmentX -= segmentSize;
+      case "right":
+        newSegmentX -= SEGMENT_SIZE;
         break;
-      case 2:
-        newSegmentY -= segmentSize;
+      case "down":
+        newSegmentY -= SEGMENT_SIZE;
         break;
-      case 3:
-        newSegmentX += segmentSize;
+      case "left":
+        newSegmentX += SEGMENT_SIZE;
         break;
       default:
     }
+
+    // Increment apple counter
     console.log("Apple Eaten");
+
     snake.push({
       x: newSegmentX,
       y: newSegmentY,
-      direction: lastSegment.direction,
-      pivotX: lastSegment.pivotX,
-      pivotY: lastSegment.pivotY,
-      pivotDirection: lastSegment.pivotDirection,
       color: lastSegment.color,
     });
     generateRandomAppleLocation();
@@ -247,7 +188,7 @@ function renderRectangle(leftX, topY, width, height, renderColor) {
 }
 
 function renderApple() {
-  renderRectangle(appleX, appleY, segmentSize, segmentSize, "#379683");
+  renderRectangle(appleX, appleY, SEGMENT_SIZE, SEGMENT_SIZE, "#379683");
 }
 
 function generateRandomAppleLocation() {
