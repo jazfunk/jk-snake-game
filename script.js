@@ -3,7 +3,6 @@ let canvasContext = canvas.getContext("2d");
 
 const SEGMENT_SIZE = 20;
 const SNAKE_SPEED = 20;
-
 const snake = [
   {
     x: canvas.width / 2,
@@ -29,8 +28,13 @@ const snake = [
 
 let appleX = 0;
 let appleY = 0;
+let score = 0;
 
 let myTimer;
+
+let gameOver = false;
+
+let currentDirection = null;
 
 window.onload = () => {
   generateRandomAppleLocation();
@@ -45,7 +49,7 @@ function keyDownHandler(e) {
   }
   clearInterval(myTimer);
 
-  const FRAMES_PER_SECOND = 5;
+  const FRAMES_PER_SECOND = 10;
   let direction = null;
 
   if (e.key === "Up" || e.key === "ArrowUp") {
@@ -67,10 +71,34 @@ function keyDownHandler(e) {
   if (direction !== null) {
     renderGameObjects();
     myTimer = setInterval(() => {
-      moveSnake(direction);
-      renderGameObjects();
+      if (gameOver === false) {
+        moveSnake(direction);
+        renderGameObjects();
+      }
     }, 1000 / FRAMES_PER_SECOND);
   }
+}
+
+function detectCollision(snakeHead) {
+  if (
+    snakeHead.x < 0 ||
+    snakeHead.x === canvas.width ||
+    snakeHead.y < 0 ||
+    snakeHead.y === canvas.height
+  ) {
+    return true;
+  }
+
+  let hitSelf = false;
+  snake.forEach((segment) => {
+    if (segment !== snake[0]) {
+      if (segment.x === snakeHead.x && segment.y === snakeHead.y) {
+        hitSelf = true;
+      }
+    }
+  });
+
+  return hitSelf;
 }
 
 function moveSnake(direction) {
@@ -78,31 +106,44 @@ function moveSnake(direction) {
   let nextSegment = [];
 
   snake.forEach((segment) => {
-    currentSegment[0] = segment.x;
-    currentSegment[1] = segment.y;
-
-    if (segment !== snake[0]) {
-      segment.x = nextSegment[0];
-      segment.y = nextSegment[1];
+    if (gameOver) {
+      return;
     } else {
-      switch (direction) {
-        case "up":
-          segment.y -= SNAKE_SPEED;
-          break;
-        case "right":
-          segment.x += SNAKE_SPEED;
-          break;
-        case "down":
-          segment.y += SNAKE_SPEED;
-          break;
-        case "left":
-          segment.x -= SNAKE_SPEED;
-          break;
-        default:
+      currentSegment[0] = segment.x;
+      currentSegment[1] = segment.y;
+
+      if (segment !== snake[0]) {
+        segment.x = nextSegment[0];
+        segment.y = nextSegment[1];
+      } else {
+        if (detectCollision(segment)) {
+          endGame();
+          return;
+        } else {
+          currentDirection = direction;
+          switch (direction) {
+            case "up":
+              segment.y -= SNAKE_SPEED;
+              break;
+            case "right":
+              segment.x += SNAKE_SPEED;
+              break;
+            case "down":
+              segment.y += SNAKE_SPEED;
+              break;
+            case "left":
+              segment.x -= SNAKE_SPEED;
+              break;
+            default:
+          }
+        }
+      }
+
+      if (gameOver === false) {
+        nextSegment[0] = currentSegment[0];
+        nextSegment[1] = currentSegment[1];
       }
     }
-    nextSegment[0] = currentSegment[0];
-    nextSegment[1] = currentSegment[1];
   });
 }
 
@@ -126,8 +167,8 @@ function renderSnake(snake) {
 
 function endGame() {
   clearInterval(myTimer);
-  clearSnakeDirectionValues();
   displayGameOver();
+  gameOver = true;
 }
 
 function renderBackground() {
@@ -145,6 +186,9 @@ function renderGrid() {
 }
 
 function renderGameObjects() {
+  if (gameOver) {
+    return;
+  }
   renderBackground();
   renderGrid();
   renderSnake(snake);
@@ -152,34 +196,22 @@ function renderGameObjects() {
 
   if (isSnakeEatingApple()) {
     const lastSegment = snake.slice(-1)[0];
-    let newSegmentX = lastSegment.x;
-    let newSegmentY = lastSegment.y;
-    switch (lastSegment.direction) {
-      case "up":
-        newSegmentY += SEGMENT_SIZE;
-        break;
-      case "right":
-        newSegmentX -= SEGMENT_SIZE;
-        break;
-      case "down":
-        newSegmentY -= SEGMENT_SIZE;
-        break;
-      case "left":
-        newSegmentX += SEGMENT_SIZE;
-        break;
-      default:
-    }
-
-    // Increment apple counter
-    console.log("Apple Eaten");
 
     snake.push({
-      x: newSegmentX,
-      y: newSegmentY,
+      x: lastSegment.x,
+      y: lastSegment.y,
       color: lastSegment.color,
     });
+
+    renderScore();
     generateRandomAppleLocation();
   }
+}
+
+function renderScore() {
+  score++;
+  let scoreDisplay = document.getElementById("score-board");
+  scoreDisplay.innerText = `Apples Eaten:  ${score}`;
 }
 
 function renderRectangle(leftX, topY, width, height, renderColor) {
