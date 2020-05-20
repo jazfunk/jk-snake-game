@@ -1,22 +1,25 @@
 # JavaScript Snake Game
-Written in vanilla JavaScript, HTML, and CSS.  The classic Snake Game.
+The classic Snake Game, written in pure (*"vanilla"*) JavaScript, HTML, and CSS.
 
 ## Links
 [View Application](https://jazfunk.github.io/jk-snake-game/)  
 [View Repository](https://github.com/jazfunk/jk-snake-game.git)
 
 ## Application Images
-<!-- <img src="images/calculatorApp_SS.png">   -->
+<img src="images/snakeGame_SS_1.png">  
+<img src="images/snakeGame_SS_1a.png">  
+<img src="images/snakeGame_SS_2.png">  
 
 ## Summary
-What a challenge!  In the begining, coding was simple, and I had a good understanding of what was going on.  As the game progressed, and due to the complexity I initially built, the movement was problematic.  
+What a challenge!  At the outset, developing this application was rather straight-forward.  Drawing shapes on an **HTML Canvas** object, moving those shapes, then redrawing in a *setInterval()* timer to depict movement was not a foreign concept.  As the game progressed, and complexity grew, implementing the advanced functions proved to be troublesome.
 
-After the first week, I looked at it from a different perspective and rebuilt the logic.  It was all downhill from there.
-<!-- You would think a calculator is fairly easy to code the logic for, but there are some challenging aspects when dealing with strings and numbers; trying to sum them in a mathematical equation, make sure only one decimal point is allowed, etc.
+After resetting myself with a "work-free" weekend... and with some helpful hints, it was approached from a different perspective, and the logic was rebuilt.  By reducing the number of properties for each snake array segment down to the minimum necessary, and letting the other functions control the process, how to achieve the snake "zig-zag" movement became clear. 
 
-Through the use of "truthy" and "falsy" checks, I simplied the validation of input data.  Comparing a boolean value of whether the object has usable data, instead of checking the specific value, lead to shorter, cleaner code.
+Simply moving each segment to where the preceding one was located, and moving the snake head in the direction of the arrow key pressed, the snake "slithered" across the screen.  With significantly less code, might I add.  
 
-This was a lot of fun to develop, and I thought it was going to take a weeks.  It only took three days, from the first line of code, to the final styling. -->
+Collision detection also came to fruition rapidly, and with very few *"headaches"*.  A simple comparison of the snake heads current position, game board boundaries, and the snake array, provides the path to end the game, and notify the user.
+
+An enjoyable and rewarding learning experience, the snake game application taught me valuable new ways to set rules when converting logic into code, logically.
 
 
 ## Author

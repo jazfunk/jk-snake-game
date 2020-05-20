@@ -3,45 +3,59 @@ let canvasContext = canvas.getContext("2d");
 
 const SEGMENT_SIZE = 20;
 const SNAKE_SPEED = 20;
-const snake = [
-  {
-    x: canvas.width / 2,
-    y: canvas.height / 2,
-    color: null,
-  },
-  {
-    x: canvas.width / 2,
-    y: canvas.height / 2 + SEGMENT_SIZE,
-    color: null,
-  },
-  {
-    x: canvas.width / 2,
-    y: canvas.height / 2 + SEGMENT_SIZE * 2,
-    color: null,
-  },
-  {
-    x: canvas.width / 2,
-    y: canvas.height / 2 + SEGMENT_SIZE * 3,
-    color: null,
-  },
-];
+const snake = [];
 
 let appleX = 0;
 let appleY = 0;
 let score = 0;
 
 let myTimer;
-
 let gameOver = false;
-
 let currentDirection = null;
 
 window.onload = () => {
-  generateRandomAppleLocation();
-  renderGameObjects();
+  startGame();
 };
 
-document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keydown", keyDownHandler);
+document.addEventListener("click", () => {
+    if (gameOver) {
+      startGame();
+    }
+  });
+
+function startGame() {
+  gameOver = false;
+  initializeSnake();
+  generateRandomAppleLocation();
+  renderGameObjects();
+}
+
+function initializeSnake() {  
+  snake.length = 0;
+  snake.push(
+    {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      color: null,
+    },
+    {
+      x: canvas.width / 2,
+      y: canvas.height / 2 + SEGMENT_SIZE,
+      color: null,
+    },
+    {
+      x: canvas.width / 2,
+      y: canvas.height / 2 + SEGMENT_SIZE * 2,
+      color: null,
+    },
+    {
+      x: canvas.width / 2,
+      y: canvas.height / 2 + SEGMENT_SIZE * 3,
+      color: null,
+    }
+  );
+}
 
 function keyDownHandler(e) {
   if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
@@ -79,28 +93,6 @@ function keyDownHandler(e) {
   }
 }
 
-function detectCollision(snakeHead) {
-  if (
-    snakeHead.x < 0 ||
-    snakeHead.x === canvas.width ||
-    snakeHead.y < 0 ||
-    snakeHead.y === canvas.height
-  ) {
-    return true;
-  }
-
-  let hitSelf = false;
-  snake.forEach((segment) => {
-    if (segment !== snake[0]) {
-      if (segment.x === snakeHead.x && segment.y === snakeHead.y) {
-        hitSelf = true;
-      }
-    }
-  });
-
-  return hitSelf;
-}
-
 function moveSnake(direction) {
   let currentSegment = [];
   let nextSegment = [];
@@ -120,7 +112,6 @@ function moveSnake(direction) {
           endGame();
           return;
         } else {
-          currentDirection = direction;
           switch (direction) {
             case "up":
               segment.y -= SNAKE_SPEED;
@@ -147,6 +138,28 @@ function moveSnake(direction) {
   });
 }
 
+function detectCollision(snakeHead) {
+  if (
+    snakeHead.x < 0 ||
+    snakeHead.x === canvas.width ||
+    snakeHead.y < 0 ||
+    snakeHead.y === canvas.height
+  ) {
+    return true;
+  }
+
+  let hitSelf = false;
+  snake.forEach((segment) => {
+    if (segment !== snake[0]) {
+      if (segment.x === snakeHead.x && segment.y === snakeHead.y) {
+        hitSelf = true;
+      }
+    }
+  });
+
+  return hitSelf;
+}
+
 function renderSnake(snake) {
   snake.forEach((segment) => {
     if (segment === snake[0]) {
@@ -165,12 +178,6 @@ function renderSnake(snake) {
   });
 }
 
-function endGame() {
-  clearInterval(myTimer);
-  displayGameOver();
-  gameOver = true;
-}
-
 function renderBackground() {
   renderRectangle(0, 0, canvas.width, canvas.height, "#5CDB95");
 }
@@ -183,6 +190,12 @@ function renderGrid() {
       renderRectangle(col, row + 20, 20, 1, gridColor);
     }
   }
+}
+
+function renderScore() {
+  score++;
+  let scoreDisplay = document.getElementById("score-board");
+  scoreDisplay.innerText = `Apples Eaten:  ${score}`;
 }
 
 function renderGameObjects() {
@@ -208,19 +221,9 @@ function renderGameObjects() {
   }
 }
 
-function renderScore() {
-  score++;
-  let scoreDisplay = document.getElementById("score-board");
-  scoreDisplay.innerText = `Apples Eaten:  ${score}`;
-}
-
 function renderRectangle(leftX, topY, width, height, renderColor) {
   canvasContext.fillStyle = renderColor;
   canvasContext.fillRect(leftX, topY, width, height);
-}
-
-function renderApple() {
-  renderRectangle(appleX, appleY, SEGMENT_SIZE, SEGMENT_SIZE, "#379683");
 }
 
 function generateRandomAppleLocation() {
@@ -228,14 +231,24 @@ function generateRandomAppleLocation() {
   appleY = Math.floor(Math.random() * 30) * 20;
 }
 
+function renderApple() {
+  renderRectangle(appleX, appleY, SEGMENT_SIZE, SEGMENT_SIZE, "#379683");
+}
+
 function isSnakeEatingApple() {
   return snake[0].x === appleX && snake[0].y === appleY;
 }
 
+function endGame() {
+  clearInterval(myTimer);
+  displayGameOver();
+  gameOver = true;
+}
+
 function displayGameOver() {
-  canvasContext.font = "52px Unknown Font, sans-serif";
+  canvasContext.font = "38px Unknown Font, sans-serif";
   canvasContext.fillStyle = "#05386B";
-  let displayText = "Game Over";
+  let displayText = "Game Over - Click anywhere to play again.";
   let displayTextSize = canvasContext.measureText(displayText);
   canvasContext.fillText(
     displayText,
