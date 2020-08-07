@@ -5,10 +5,8 @@ The classic Snake Game, written in pure (*"vanilla"*) JavaScript, HTML, and CSS.
 [View Application](https://jazfunk.github.io/jk-snake-game/)  
 [View Repository](https://github.com/jazfunk/jk-snake-game.git)
 
-## Application Images
-<img src="images/snakeGame_SS_1.png">  
-<img src="images/snakeGame_SS_1a.png">  
-<img src="images/snakeGame_SS_2.png">  
+## Application Images 
+<img src="images/snakeGame_SS_1a.png"> 
 
 ## Summary
 What a challenge!  At the outset, developing this application was rather straight-forward.  Drawing shapes on an **HTML Canvas** object, moving those shapes, then redrawing in a *setInterval()* timer to depict movement was not a foreign concept.  As the game progressed, and complexity grew, implementing the advanced functions proved to be troublesome.
